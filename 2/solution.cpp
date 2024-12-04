@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -25,10 +26,7 @@ bool isSafe(const vector<int> levels) {
             increasing = false;
         }
     }
-
-    if (increasing == true || decreasing == true) {
-        return true;
-    }
+    return increasing || decreasing;
 }
 
 int main() {
@@ -36,8 +34,10 @@ int main() {
 
     string line;
     int safe = 0;
+    int newSafe = 0;
 
     while (getline(file, line)) {
+        // build report of levels
         istringstream iss(line);
         vector<int> levels;
         int level;
@@ -46,10 +46,36 @@ int main() {
             levels.push_back(level);
         }
 
+        // check if report is safe
         if (isSafe(levels)) {
             safe++;
         }
+
+        // check if report is safe even removing any level
+        vector<int> array;
+        array.resize(levels.size());
+
+        for (int i = 0; i < levels.size(); i++) {
+            array[i] = levels[i];
+        }
+
+        if (isSafe(array)) {
+            newSafe++;
+        } else {
+            for (int i = 0; i < array.size(); i++) {
+                int temp = array[i];
+                array.erase(array.begin() + i);
+
+                if (isSafe(array)) {
+                    newSafe++;
+                    break;
+                }
+
+                array.insert(array.begin() + i, temp);
+            }
+        }
     }
 
-    cout << safe;
+    cout << safe << endl;
+    cout << newSafe << endl;
 }
