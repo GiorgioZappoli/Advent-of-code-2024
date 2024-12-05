@@ -34,9 +34,9 @@ int main() {
                 total += x * y;
 
             } catch (const std::invalid_argument& e) {
-                cerr << "Errore di conversione: uno dei valori non è un numero valido.\n";
+                cerr << "invalid argument error.\n";
             } catch (const std::out_of_range& e) {
-                cerr << "Errore: il numero è fuori dal range.\n";
+                cerr << "out of range errors.\n";
             }
         }
 
