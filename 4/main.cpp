@@ -7,7 +7,7 @@ using namespace std;
 
 int countMatches(const string& str, const string& pattern) {
     if (str.size() < pattern.size())
-        return 0;  // Evita l'errore
+        return 0;
     int count = 0;
     for (size_t i = 0; i <= str.size() - pattern.size(); ++i) {
         if (str.substr(i, pattern.size()) == pattern) {
@@ -15,6 +15,43 @@ int countMatches(const string& str, const string& pattern) {
         }
     }
     return count;
+}
+
+bool MASChecker(char newMatrix[3][3]) {
+    string line;
+    string line2;
+    string pattern2 = "MAS";
+    int score = 0;
+
+    line += newMatrix[0][0];
+    line += newMatrix[1][1];
+    line += newMatrix[2][2];
+
+    line2 += newMatrix[0][2];
+    line2 += newMatrix[1][1];
+    line2 += newMatrix[2][0];
+
+    if (line == pattern2) {
+        score++;
+    }
+
+    if (line2 == pattern2) {
+        score++;
+    }
+
+    if ((string(line.rbegin(), line.rend()) == pattern2)) {
+        score++;
+    }
+
+    if ((string(line2.rbegin(), line2.rend()) == pattern2)) {
+        score++;
+    }
+
+    if (score == 2) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 int countOccurrences(const vector<vector<char>>& matrix, const string& pattern) {
@@ -55,6 +92,8 @@ int countOccurrences(const vector<vector<char>>& matrix, const string& pattern) 
 
 int main() {
     vector<vector<char>> matrix;
+    const int newMatrixSize = 3;
+    char newMatrix[newMatrixSize][newMatrixSize];
     ifstream file("input.txt");
 
     string line;
@@ -63,17 +102,33 @@ int main() {
     }
     file.close();
 
-    for (size_t i = 0; i < matrix.size(); ++i) {
-        if (matrix[i].size() != matrix[0].size()) {
-            cerr << "Errore: righe di lunghezza diversa nella matrice." << endl;
-            return 1;
+    int supremeCounter = 0;
+
+    for (int i = 0; i < matrix.size() - 2; i++) {
+        for (int j = 0; j < matrix[i].size() - 2; j++) {
+            for (int ki = 0; ki < newMatrixSize; ki++) {
+                for (size_t kj = 0; kj < newMatrixSize; kj++) {
+                    newMatrix[ki][kj] = matrix[i + ki][j + kj];
+                    // cout << "(" << ki << ")(" << kj << ") = (" << i + ki << ")(" << j + kj << ")   ";
+                    // cout << newMatrix[ki][kj] << " ";
+                }
+                // cout << endl;
+            }
+            // cout << endl << endl;
+
+            if (newMatrix[1][1] == 'A') {
+                if (MASChecker(newMatrix)) {
+                    supremeCounter++;
+                }
+            }
         }
     }
 
     string pattern = "XMAS";
     int totalCount = countOccurrences(matrix, pattern);
 
-    cout << totalCount << endl;
+    cout << "supremeCounter: " << supremeCounter << endl;
+    cout << "totalCount: " << totalCount << endl;
 
     return 0;
 }
